@@ -1,428 +1,418 @@
 /* =====================================================
-PREVENCIÓN DEL SUICIDIO - SCRIPT PRINCIPAL
+   PREVENCIÓN DEL SUICIDIO
+   SCRIPT PRINCIPAL
 ===================================================== */
 
 /* =====================================================
-
-1. MENÚ PARA CELULAR
-   ===================================================== */
+   1. MENÚ PARA CELULAR
+===================================================== */
 
 const menuToggle = document.getElementById("menuToggle");
+
 const navLinks = document.getElementById("navLinks");
 
 if (menuToggle && navLinks) {
-  ```
-menuToggle.addEventListener("click", function () {
-
-    navLinks.classList.toggle("active");
-
-});
-```;
+  menuToggle.addEventListener("click", function () {
+    navLinks.classList.toggle("open");
+  });
 }
 
 /* =====================================================
-2. CERRAR EL MENÚ AL HACER CLICK EN UN ENLACE
+   2. CERRAR MENÚ AL HACER CLICK
 ===================================================== */
 
 const navigationLinks = document.querySelectorAll(".nav-links a");
 
 navigationLinks.forEach(function (link) {
-  ```
-link.addEventListener("click", function () {
-
+  link.addEventListener("click", function () {
     if (navLinks) {
-
-        navLinks.classList.remove("active");
-
+      navLinks.classList.remove("open");
     }
-
-});
-```;
+  });
 });
 
 /* =====================================================
-3. MODO OSCURO / MODO CLARO
+   3. MODO OSCURO
 ===================================================== */
 
 const themeButton = document.getElementById("themeButton");
 
-// Revisar si el usuario ya tenía un tema guardado
-
 const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
-  ```
-document.body.classList.add("dark");
+  document.body.classList.add("dark");
 
-if (themeButton) {
-
+  if (themeButton) {
     themeButton.textContent = "☀";
-
-}
-```;
+  }
 } else {
-  ```
-if (themeButton) {
-
+  if (themeButton) {
     themeButton.textContent = "☾";
-
+  }
 }
-```;
-}
-
-// Cambiar tema
 
 if (themeButton) {
-  ```
-themeButton.addEventListener("click", function () {
-
+  themeButton.addEventListener("click", function () {
     document.body.classList.toggle("dark");
 
-    const darkMode =
-        document.body.classList.contains("dark");
-
+    const darkMode = document.body.classList.contains("dark");
 
     if (darkMode) {
+      themeButton.textContent = "☀";
 
-        themeButton.textContent = "☀";
-
-        localStorage.setItem("theme", "dark");
-
+      localStorage.setItem("theme", "dark");
     } else {
+      themeButton.textContent = "☾";
 
-        themeButton.textContent = "☾";
-
-        localStorage.setItem("theme", "light");
-
+      localStorage.setItem("theme", "light");
     }
-
-});
-```;
+  });
 }
 
 /* =====================================================
-4. BOTÓN "VOLVER ARRIBA"
+   4. BOTÓN VOLVER ARRIBA
 ===================================================== */
 
 const topButton = document.getElementById("topButton");
 
 if (topButton) {
-  ```
-window.addEventListener("scroll", function () {
-
+  window.addEventListener("scroll", function () {
     if (window.scrollY > 500) {
-
-        topButton.classList.add("visible");
-
+      topButton.classList.add("visible");
     } else {
-
-        topButton.classList.remove("visible");
-
+      topButton.classList.remove("visible");
     }
+  });
 
-});
-
-
-topButton.addEventListener("click", function () {
-
+  topButton.addEventListener("click", function () {
     window.scrollTo({
+      top: 0,
 
-        top: 0,
-
-        behavior: "smooth"
-
+      behavior: "smooth",
     });
-
-});
-```;
+  });
 }
 
 /* =====================================================
-5. ANIMACIONES AL HACER SCROLL
+   5. ANIMACIONES AL HACER SCROLL
 ===================================================== */
 
 const animatedElements = document.querySelectorAll(
-  ".warning-card, .step, .protective-card, .video-card, .gallery-item",
+  ".warning-card, .step, .protective-card, .video-card",
 );
 
 if ("IntersectionObserver" in window) {
-  ```
-const observerOptions = {
+  const observerOptions = {
+    threshold: 0.12,
+  };
 
-    threshold: 0.12
-
-};
-
-
-const observer = new IntersectionObserver(
+  const observer = new IntersectionObserver(
     function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
 
-        entries.forEach(function (entry) {
-
-            if (entry.isIntersecting) {
-
-                entry.target.classList.add("show");
-
-                observer.unobserve(entry.target);
-
-            }
-
-        });
-
+          observer.unobserve(entry.target);
+        }
+      });
     },
-    observerOptions
-);
 
+    observerOptions,
+  );
 
-animatedElements.forEach(function (element) {
-
+  animatedElements.forEach(function (element) {
     element.classList.add("animate");
 
     observer.observe(element);
-
-});
-```;
+  });
 } else {
-  ```
-// Si el navegador no soporta IntersectionObserver
-
-animatedElements.forEach(function (element) {
-
+  animatedElements.forEach(function (element) {
     element.classList.add("show");
-
-});
-```;
+  });
 }
 
 /* =====================================================
-6. DETECTAR VIDEOS
+   6. VIDEOS
 ===================================================== */
 
 const videos = document.querySelectorAll("video");
 
 videos.forEach(function (video) {
-  ```
-video.addEventListener("play", function () {
-
-    // Pausar los demás videos cuando comienza uno
-
+  video.addEventListener("play", function () {
     videos.forEach(function (otherVideo) {
-
-        if (otherVideo !== video) {
-
-            otherVideo.pause();
-
-        }
-
+      if (otherVideo !== video) {
+        otherVideo.pause();
+      }
     });
-
-});
-```;
+  });
 });
 
 /* =====================================================
-7. EFECTO SUAVE PARA LOS ENLACES INTERNOS
+   7. ENLACES INTERNOS
 ===================================================== */
 
 const internalLinks = document.querySelectorAll('a[href^="#"]');
 
 internalLinks.forEach(function (link) {
-  ```
-link.addEventListener("click", function (event) {
+  link.addEventListener("click", function (event) {
+    const targetId = link.getAttribute("href");
 
-    const targetId =
-        link.getAttribute("href");
+    if (targetId && targetId !== "#") {
+      const target = document.querySelector(targetId);
 
-
-    if (
-        targetId &&
-        targetId !== "#" &&
-        document.querySelector(targetId)
-    ) {
-
+      if (target) {
         event.preventDefault();
 
-
-        const target =
-            document.querySelector(targetId);
-
-
         target.scrollIntoView({
+          behavior: "smooth",
 
-            behavior: "smooth",
-
-            block: "start"
-
+          block: "start",
         });
-
+      }
     }
-
-});
-```;
+  });
 });
 
 /* =====================================================
-8. MENSAJE DE CARGA
+   8. PÁGINA CARGADA
 ===================================================== */
 
 window.addEventListener("load", function () {
-  ```
-document.body.classList.add("page-loaded");
-```;
+  document.body.classList.add("page-loaded");
 });
 
 /* =====================================================
-FIN DEL SCRIPT
-===================================================== */
-/* =====================================================
-   GALERÍA AUTOMÁTICA - SECCIÓN 05
+   9. GALERÍA AUTOMÁTICA
 ===================================================== */
 
 const galleryItems = document.querySelectorAll(".slider-item");
+
 const galleryPrev = document.getElementById("galleryPrev");
+
 const galleryNext = document.getElementById("galleryNext");
+
 const galleryDots = document.getElementById("galleryDots");
+
 const gallerySlider = document.getElementById("sliderGallery");
 
 let galleryIndex = 0;
-let galleryInterval;
 
-/* =====================================================
-   CREAR LOS PUNTOS
-===================================================== */
+let galleryInterval = null;
 
-galleryItems.forEach((item, index) => {
-  const dot = document.createElement("button");
+/* Ejecutar solamente si existe */
 
-  dot.classList.add("slider-dot");
+if (
+  galleryItems.length > 0 &&
+  galleryPrev &&
+  galleryNext &&
+  galleryDots &&
+  gallerySlider
+) {
+  /* =========================
+     LIMPIAR PUNTOS
+  ========================= */
 
-  dot.setAttribute("aria-label", `Ir a la imagen ${index + 1}`);
+  galleryDots.innerHTML = "";
 
-  dot.addEventListener("click", () => {
-    galleryIndex = index;
+  /* =========================
+     CREAR PUNTOS
+  ========================= */
+
+  galleryItems.forEach(function (_, index) {
+    const dot = document.createElement("button");
+
+    dot.classList.add("slider-dot");
+
+    dot.type = "button";
+
+    dot.setAttribute(
+      "aria-label",
+
+      `Ir a la imagen ${index + 1}`,
+    );
+
+    dot.addEventListener("click", function () {
+      galleryIndex = index;
+
+      updateGallery();
+
+      restartGalleryInterval();
+    });
+
+    galleryDots.appendChild(dot);
+  });
+
+  const dots = galleryDots.querySelectorAll(".slider-dot");
+
+  /* =========================
+     ACTUALIZAR GALERÍA
+  ========================= */
+
+  function updateGallery() {
+    galleryItems.forEach(function (item) {
+      item.classList.remove(
+        "active",
+
+        "prev",
+
+        "next",
+      );
+    });
+
+    dots.forEach(function (dot) {
+      dot.classList.remove("active");
+    });
+
+    const prevIndex =
+      galleryIndex === 0 ? galleryItems.length - 1 : galleryIndex - 1;
+
+    const nextIndex =
+      galleryIndex === galleryItems.length - 1 ? 0 : galleryIndex + 1;
+
+    galleryItems[galleryIndex].classList.add("active");
+
+    galleryItems[prevIndex].classList.add("prev");
+
+    galleryItems[nextIndex].classList.add("next");
+
+    dots[galleryIndex].classList.add("active");
+  }
+
+  /* =========================
+     SIGUIENTE
+  ========================= */
+
+  function nextGalleryImage() {
+    galleryIndex = (galleryIndex + 1) % galleryItems.length;
 
     updateGallery();
+  }
+
+  /* =========================
+     ANTERIOR
+  ========================= */
+
+  function prevGalleryImage() {
+    galleryIndex =
+      (galleryIndex - 1 + galleryItems.length) % galleryItems.length;
+
+    updateGallery();
+  }
+
+  /* =========================
+     AUTOMÁTICO
+     CADA 5 SEGUNDOS
+  ========================= */
+
+  function startGalleryInterval() {
+    clearInterval(galleryInterval);
+
+    galleryInterval = setInterval(
+      nextGalleryImage,
+
+      5000,
+    );
+  }
+
+  function stopGalleryInterval() {
+    clearInterval(galleryInterval);
+  }
+
+  function restartGalleryInterval() {
+    stopGalleryInterval();
+
+    startGalleryInterval();
+  }
+
+  /* =========================
+     BOTÓN SIGUIENTE
+  ========================= */
+
+  galleryNext.addEventListener("click", function () {
+    nextGalleryImage();
 
     restartGalleryInterval();
   });
 
-  galleryDots.appendChild(dot);
-});
+  /* =========================
+     BOTÓN ANTERIOR
+  ========================= */
 
-const dots = document.querySelectorAll(".slider-dot");
+  galleryPrev.addEventListener("click", function () {
+    prevGalleryImage();
 
-/* =====================================================
-   ACTUALIZAR GALERÍA
-===================================================== */
-
-function updateGallery() {
-  galleryItems.forEach((item) => {
-    item.classList.remove("active", "prev", "next");
+    restartGalleryInterval();
   });
 
-  dots.forEach((dot) => {
-    dot.classList.remove("active");
+  /* =========================
+     PAUSAR AL PONER EL MOUSE
+  ========================= */
+
+  gallerySlider.addEventListener("mouseenter", function () {
+    stopGalleryInterval();
   });
 
-  /* IMAGEN ACTUAL */
+  gallerySlider.addEventListener("mouseleave", function () {
+    startGalleryInterval();
+  });
 
-  galleryItems[galleryIndex].classList.add("active");
+  /* =========================
+     PAUSAR SI CAMBIAS DE PESTAÑA
+  ========================= */
 
-  /* IMAGEN ANTERIOR */
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      stopGalleryInterval();
+    } else {
+      startGalleryInterval();
+    }
+  });
 
-  const prevIndex =
-    galleryIndex === 0 ? galleryItems.length - 1 : galleryIndex - 1;
+  /* =========================
+     SOPORTE TÁCTIL
+  ========================= */
 
-  galleryItems[prevIndex].classList.add("prev");
+  let touchStartX = 0;
 
-  /* IMAGEN SIGUIENTE */
+  let touchEndX = 0;
 
-  const nextIndex =
-    galleryIndex === galleryItems.length - 1 ? 0 : galleryIndex + 1;
+  gallerySlider.addEventListener(
+    "touchstart",
+    function (event) {
+      touchStartX = event.changedTouches[0].screenX;
+    },
+    {
+      passive: true,
+    },
+  );
 
-  galleryItems[nextIndex].classList.add("next");
+  gallerySlider.addEventListener(
+    "touchend",
+    function (event) {
+      touchEndX = event.changedTouches[0].screenX;
 
-  /* PUNTO ACTIVO */
+      const difference = touchStartX - touchEndX;
 
-  dots[galleryIndex].classList.add("active");
-}
+      if (Math.abs(difference) > 50) {
+        if (difference > 0) {
+          nextGalleryImage();
+        } else {
+          prevGalleryImage();
+        }
 
-/* =====================================================
-   SIGUIENTE
-===================================================== */
+        restartGalleryInterval();
+      }
+    },
+    {
+      passive: true,
+    },
+  );
 
-function nextGalleryImage() {
-  galleryIndex++;
-
-  if (galleryIndex >= galleryItems.length) {
-    galleryIndex = 0;
-  }
+  /* =========================
+     INICIAR
+  ========================= */
 
   updateGallery();
-}
-
-/* =====================================================
-   ANTERIOR
-===================================================== */
-
-function prevGalleryImage() {
-  galleryIndex--;
-
-  if (galleryIndex < 0) {
-    galleryIndex = galleryItems.length - 1;
-  }
-
-  updateGallery();
-}
-
-/* =====================================================
-   AUTOMÁTICO CADA 5 SEGUNDOS
-===================================================== */
-
-function startGalleryInterval() {
-  galleryInterval = setInterval(() => {
-    nextGalleryImage();
-  }, 5000);
-}
-
-function restartGalleryInterval() {
-  clearInterval(galleryInterval);
 
   startGalleryInterval();
 }
-
-/* =====================================================
-   FLECHAS
-===================================================== */
-
-galleryNext.addEventListener("click", () => {
-  nextGalleryImage();
-
-  restartGalleryInterval();
-});
-
-galleryPrev.addEventListener("click", () => {
-  prevGalleryImage();
-
-  restartGalleryInterval();
-});
-
-/* =====================================================
-   PAUSAR AL PONER EL MOUSE ENCIMA
-===================================================== */
-
-gallerySlider.addEventListener("mouseenter", () => {
-  clearInterval(galleryInterval);
-});
-
-gallerySlider.addEventListener("mouseleave", () => {
-  startGalleryInterval();
-});
-
-/* =====================================================
-   INICIAR
-===================================================== */
-
-updateGallery();
-
-startGalleryInterval();
